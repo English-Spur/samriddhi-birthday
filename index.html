@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HAPPIEST BIRTHDAY TO MY PRINCESS</title>
+  <style>
+    :root {
+      --bg-midnight: #030712;
+      --card-midnight: rgba(10, 19, 38, 0.88);
+      --accent-gold: #ffd700;
+      --accent-sparkle: #fff7b8;
+      --border-glow: rgba(255, 215, 0, 0.35);
+      --white-glow: rgba(255, 255, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: radial-gradient(ellipse at 50% 10%, #0d1b38 0%, #050b18 55%, #020409 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      position: relative;
+      padding: 16px 12px 40px;
+    }
+
+    /* Glitter & Sparkle Canvas */
+    #glitter-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* Balloon Layer */
+    #balloon-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      cursor: pointer;
+      pointer-events: auto;
+      will-change: transform;
+      animation: floatUp 14s linear forwards;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
+      transition: transform 0.15s ease;
+    }
+
+    .balloon:active {
+      transform: scale(1.15) !important;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg) translateX(0);
+        opacity: 0.95;
+      }
+      50% {
+        transform: translateY(-55vh) rotate(5deg) translateX(20px);
+      }
+      100% {
+        transform: translateY(-120vh) rotate(-5deg) translateX(-20px);
+        opacity: 0.85;
+      }
+    }
+
+    /* Main Container */
+    .book-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      backdrop-filter: blur(14px);
+      background: var(--card-midnight);
+      border: 1px solid var(--border-glow);
+      border-radius: 24px;
+      padding: 24px 16px 30px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.18);
+      margin-top: 6px;
+    }
+
+    /* White Glowing Symbols */
+    .white-glow-icon {
+      fill: #ffffff;
+      filter: drop-shadow(0 0 6px #ffffff) drop-shadow(0 0 12px rgba(255, 255, 255, 0.85));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .glow-interrobang {
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px #ffffff, 0 0 16px rgba(255, 255, 255, 0.8);
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .symbol-cluster {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 14px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 18px;
+      width: 100%;
+    }
+
+    .header h1 {
+      font-size: 1.85rem;
+      line-height: 1.25;
+      color: #ffffff;
+      text-shadow: 0 0 12px var(--accent-gold), 0 0 22px rgba(255, 215, 0, 0.45);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .header-subtext {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #c7d8f5;
+      font-weight: 300;
+      margin: 8px auto 0;
+      max-width: 620px;
+      padding: 0 8px;
+    }
+
+    /* Adaptive Image Container */
+    .photo-stage-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px 0 16px;
+    }
+
+    .photo-display {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75), 0 0 20px rgba(255, 215, 0, 0.22);
+      border: 2px solid rgba(255, 215, 0, 0.45);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      background: #020611;
+      line-height: 0;
+    }
+
+    .photo-display:hover {
+      border-color: var(--accent-gold);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 30px rgba(255, 215, 0, 0.4);
+    }
+
+    .photo-display img {
+      max-width: 100%;
+      max-height: 68vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      transition: opacity 0.3s ease;
+      border-radius: 16px;
+    }
+
+    .expand-badge {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(4, 9, 20, 0.85);
+      border: 1px solid var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--accent-sparkle);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      line-height: 1;
+    }
+
+    /* Mystery Starlight Tracker */
+    .mystery-tracker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      padding: 8px 16px;
+      background: rgba(5, 12, 26, 0.65);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 30px;
+      max-width: 95%;
+    }
+
+    .star-pip {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .star-pip.active {
+      width: 15px;
+      height: 15px;
+      background: #ffffff;
+      box-shadow: 0 0 8px #ffffff, 0 0 16px #ffffff, 0 0 24px var(--accent-gold);
+      transform: scale(1.15);
+    }
+
+    /* Main Navigation Controls */
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .btn-nav {
+      background: linear-gradient(135deg, #13223f, #081124);
+      border: 1px solid var(--border-glow);
+      color: var(--accent-gold);
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-nav:active {
+      transform: scale(0.92);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.6);
+    }
+
+    /* Dedication Footer */
+    .dedication-footer {
+      margin-top: 26px;
+      text-align: center;
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      padding-top: 20px;
+      width: 100%;
+    }
+
+    .teerak-sign {
+      font-size: 1.35rem;
+      letter-spacing: 1.2px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-weight: 500;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .date-note {
+      font-size: 0.88rem;
+      color: #9cb5db;
+      margin-top: 8px;
+      letter-spacing: 0.6px;
+      font-weight: 300;
+      padding: 0 8px;
+    }
+
+    /* Fullscreen Modal Lightbox with Slider */
+    .lightbox-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      background: rgba(2, 4, 10, 0.96);
+      backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 16px;
+    }
+
+    .lightbox-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-wrapper {
+      position: relative;
+      max-width: 95vw;
+      max-height: 92vh;
+      max-height: 92dvh;
+      border-radius: 18px;
+      border: 2px solid var(--accent-gold);
+      box-shadow: 0 0 45px rgba(255, 215, 0, 0.35);
+      overflow: hidden;
+      background: #020610;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+    }
+
+    .lightbox-wrapper img {
+      max-width: 100%;
+      max-height: 88vh;
+      max-height: 88dvh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      transition: opacity 0.25s ease;
+    }
+
+    .btn-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(6, 12, 26, 0.88);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 20;
+    }
+
+    .btn-close:active {
+      transform: scale(0.92);
+      background: var(--accent-gold);
+      color: #030712;
+    }
+
+    /* Slider Buttons inside Lightbox */
+    .lightbox-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(6, 12, 26, 0.78);
+      border: 1px solid var(--border-glow);
+      color: var(--accent-gold);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      z-index: 15;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    }
+
+    .lightbox-nav-btn:hover {
+      background: rgba(22, 38, 70, 0.95);
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    .lightbox-nav-btn:active {
+      transform: translateY(-50%) scale(0.9);
+    }
+
+    .lightbox-btn-prev {
+      left: 14px;
+    }
+
+    .lightbox-btn-next {
+      right: 14px;
+    }
+
+    /* Small Screen Adjustments */
+    @media (max-width: 480px) {
+      body {
+        padding: 12px 8px 30px;
+      }
+      .book-container {
+        padding: 20px 12px 24px;
+        border-radius: 20px;
+      }
+      .header h1 {
+        font-size: 1.45rem;
+        letter-spacing: 0.8px;
+      }
+      .header-subtext {
+        font-size: 0.86rem;
+      }
+      .photo-display img {
+        max-height: 60vh;
+      }
+      .teerak-sign {
+        font-size: 1.18rem;
+      }
+      .date-note {
+        font-size: 0.82rem;
+      }
+      .lightbox-nav-btn {
+        width: 40px;
+        height: 40px;
+      }
+      .lightbox-btn-prev {
+        left: 8px;
+      }
+      .lightbox-btn-next {
+        right: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="glitter-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+  <div id="balloon-container"></div>
+
+  <div class="book-container">
+    
+    <div class="header">
+      <div class="symbol-cluster">
+        <svg class="white-glow-icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <svg class="white-glow-icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        <span class="glow-interrobang">!?</span>
+      </div>
+
+      <!-- Heading updated to UPPER CASE -->
+      <h1>
+        <svg class="white-glow-icon" style="width: 24px; height: 24px;" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        HAPPIEST BIRTHDAY TO MY PRINCESS
+        <svg class="white-glow-icon" style="width: 24px; height: 24px;" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </h1>
+
+      <p class="header-subtext">
+        You bring boundless happiness to my world, tenderness to every heartbeat, and pure magic to every moment. 
+        May your journey always sparkle as brightly and effortlessly as your beautiful soul.
+      </p>
+    </div>
+
+    <!-- Main Image Display Container -->
+    <div class="photo-stage-wrapper">
+      <div class="photo-display" id="photoDisplay" onclick="openLightbox()">
+        <img id="mainImage" src="" alt="Princess Birthday Memory">
+        <div class="expand-badge">
+          <svg style="width:13px; height:13px; fill:currentColor;" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          Click to expand
+        </div>
+      </div>
+    </div>
+
+    <!-- Mystery Tracker -->
+    <div class="mystery-tracker" id="trackerPips"></div>
+
+    <!-- Main Navigation Controls -->
+    <div class="nav-controls">
+      <button class="btn-nav" onclick="prevPhoto()" aria-label="Previous">
+        <svg style="width:24px; height:24px; fill:currentColor;" viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
+
+      <button class="btn-nav" onclick="nextPhoto()" aria-label="Next">
+        <svg style="width:24px; height:24px; fill:currentColor;" viewBox="0 0 24 24">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Dedication -->
+    <div class="dedication-footer">
+      <div class="teerak-sign">
+        <svg class="white-glow-icon" style="width: 19px; height: 19px;" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        -from your teerak
+        <svg class="white-glow-icon" style="width: 17px; height: 17px;" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        <span class="glow-interrobang" style="font-size: 1.15rem;">!?</span>
+      </div>
+      <p class="date-note">23rd December 2026, made with love and care by your teerak</p>
+    </div>
+
+  </div>
+
+  <!-- Fullscreen Modal Lightbox with Slider -->
+  <div class="lightbox-modal" id="lightboxModal" onclick="closeLightboxOnBackdrop(event)">
+    <div class="lightbox-wrapper" id="lightboxWrapper">
+      
+      <!-- Close Button -->
+      <button class="btn-close" onclick="closeLightbox()" aria-label="Close">
+        <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+
+      <!-- Slider Previous Button -->
+      <button class="lightbox-nav-btn lightbox-btn-prev" onclick="prevPhotoModal(event)" aria-label="Previous Photo">
+        <svg style="width:24px; height:24px; fill:currentColor;" viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
+
+      <!-- Expanded Image -->
+      <img id="modalImage" src="" alt="Expanded Memory View">
+
+      <!-- Slider Next Button -->
+      <button class="lightbox-nav-btn lightbox-btn-next" onclick="nextPhotoModal(event)" aria-label="Next Photo">
+        <svg style="width:24px; height:24px; fill:currentColor;" viewBox="0 0 24 24">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+      </button>
+      
+    </div>
+  </div>
+
+  <script>
+    // Exact filenames from (1).jpeg to (10).jpeg
+    const photos = [
+      "(1).jpeg",
+      "(2).jpeg",
+      "(3).jpeg",
+      "(4).jpeg",
+      "(5).jpeg",
+      "(6).jpeg",
+      "(7).jpeg",
+      "(8).jpeg",
+      "(9).jpeg",
+      "(10).jpeg"
+    ];
+
+    let currentIndex = 0;
+    const mainImage = document.getElementById("mainImage");
+    const trackerContainer = document.getElementById("trackerPips");
+    const lightboxModal = document.getElementById("lightboxModal");
+    const modalImage = document.getElementById("modalImage");
+
+    function setupTracker() {
+      trackerContainer.innerHTML = "";
+      photos.forEach((_, idx) => {
+        const pip = document.createElement("div");
+        pip.classList.add("star-pip");
+        if (idx === currentIndex) pip.classList.add("active");
+        pip.addEventListener("click", () => {
+          currentIndex = idx;
+          renderPhoto(currentIndex);
+        });
+        trackerContainer.appendChild(pip);
+      });
+    }
+
+    function updateTracker(index) {
+      const pips = trackerContainer.querySelectorAll(".star-pip");
+      pips.forEach((pip, idx) => {
+        if (idx === index) {
+          pip.classList.add("active");
+        } else {
+          pip.classList.remove("active");
+        }
+      });
+    }
+
+    function renderPhoto(index) {
+      mainImage.style.opacity = 0;
+      if (lightboxModal.classList.contains("active")) {
+        modalImage.style.opacity = 0;
+      }
+
+      setTimeout(() => {
+        mainImage.src = photos[index];
+        modalImage.src = photos[index];
+        mainImage.style.opacity = 1;
+        modalImage.style.opacity = 1;
+        updateTracker(index);
+      }, 150);
+    }
+
+    function prevPhoto() {
+      currentIndex = (currentIndex === 0) ? photos.length - 1 : currentIndex - 1;
+      renderPhoto(currentIndex);
+    }
+
+    function nextPhoto() {
+      currentIndex = (currentIndex === photos.length - 1) ? 0 : currentIndex + 1;
+      renderPhoto(currentIndex);
+    }
+
+    function prevPhotoModal(event) {
+      if (event) event.stopPropagation();
+      prevPhoto();
+    }
+
+    function nextPhotoModal(event) {
+      if (event) event.stopPropagation();
+      nextPhoto();
+    }
+
+    function openLightbox() {
+      modalImage.src = photos[currentIndex];
+      lightboxModal.classList.add("active");
+    }
+
+    function closeLightbox() {
+      lightboxModal.classList.remove("active");
+    }
+
+    function closeLightboxOnBackdrop(e) {
+      if (e.target === lightboxModal) closeLightbox();
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") prevPhoto();
+      if (e.key === "ArrowRight") nextPhoto();
+      if (e.key === "Escape") closeLightbox();
+    });
+
+    // Touch swipe support (main view)
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const stage = document.getElementById("photoDisplay");
+
+    stage.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    stage.addEventListener("touchend", (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleMainSwipe();
+    }, { passive: true });
+
+    function handleMainSwipe() {
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) nextPhoto();
+        else prevPhoto();
+      }
+    }
+
+    // Touch swipe support inside the expanded modal slider
+    let modalTouchStartX = 0;
+    let modalTouchEndX = 0;
+    const modalWrapper = document.getElementById("lightboxWrapper");
+
+    modalWrapper.addEventListener("touchstart", (e) => {
+      modalTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    modalWrapper.addEventListener("touchend", (e) => {
+      modalTouchEndX = e.changedTouches[0].screenX;
+      handleModalSwipe();
+    }, { passive: true });
+
+    function handleModalSwipe() {
+      const diff = modalTouchEndX - modalTouchStartX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) nextPhoto();
+        else prevPhoto();
+      }
+    }
+
+    // Glitter Background Animation
+    const glitterCanvas = document.getElementById("glitter-canvas");
+    const gCtx = glitterCanvas.getContext("2d");
+    let sparkles = [];
+
+    function resizeGlitterCanvas() {
+      glitterCanvas.width = window.innerWidth;
+      glitterCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeGlitterCanvas);
+    resizeGlitterCanvas();
+
+    class Sparkle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * glitterCanvas.width;
+        this.y = Math.random() * glitterCanvas.height;
+        this.size = Math.random() * 2.0 + 0.5;
+        this.speedY = Math.random() * 0.35 + 0.1;
+        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.opacity = Math.random() * 0.8 + 0.2;
+        this.flickerSpeed = Math.random() * 0.02 + 0.008;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        this.opacity += Math.sin(Date.now() * this.flickerSpeed) * 0.02;
+        if (this.y < 0 || this.x < 0 || this.x > glitterCanvas.width) {
+          this.reset();
+          this.y = glitterCanvas.height;
+        }
+      }
+      draw() {
+        gCtx.fillStyle = `rgba(255, 235, 150, ${Math.max(0, Math.min(1, this.opacity))})`;
+        gCtx.beginPath();
+        gCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        gCtx.fill();
+      }
+    }
+
+    for (let i = 0; i < 65; i++) sparkles.push(new Sparkle());
+
+    function animateSparkles() {
+      gCtx.clearRect(0, 0, glitterCanvas.width, glitterCanvas.height);
+      sparkles.forEach(s => { s.update(); s.draw(); });
+      requestAnimationFrame(animateSparkles);
+    }
+
+    // Confetti Burst Animation
+    const confettiCanvas = document.getElementById("confetti-canvas");
+    const cCtx = confettiCanvas.getContext("2d");
+    let confettiList = [];
+
+    function resizeConfettiCanvas() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeConfettiCanvas);
+    resizeConfettiCanvas();
+
+    const confettiPalette = ['#ffd700', '#ff4d6d', '#38bdf8', '#c084fc', '#4ade80', '#ffffff', '#fb923c'];
+
+    class ConfettiPiece {
+      constructor(x, y, isExplosion = false) {
+        this.x = x ?? Math.random() * confettiCanvas.width;
+        this.y = y ?? (Math.random() * -confettiCanvas.height * 0.4);
+        this.size = Math.random() * 7 + 4;
+        this.color = confettiPalette[Math.floor(Math.random() * confettiPalette.length)];
+        this.rotation = Math.random() * 360;
+        this.rotSpeed = (Math.random() - 0.5) * 8;
+        
+        if (isExplosion) {
+          const angle = Math.random() * Math.PI * 2;
+          const velocity = Math.random() * 11 + 3;
+          this.vx = Math.cos(angle) * velocity;
+          this.vy = Math.sin(angle) * velocity;
+          this.gravity = 0.25;
+        } else {
+          this.vx = (Math.random() - 0.5) * 2.5;
+          this.vy = Math.random() * 3 + 2.2;
+          this.gravity = 0.05;
+        }
+        this.opacity = 1;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += this.gravity;
+        this.rotation += this.rotSpeed;
+        if (this.vy > 9) this.opacity -= 0.015;
+      }
+      draw() {
+        cCtx.save();
+        cCtx.translate(this.x, this.y);
+        cCtx.rotate((this.rotation * Math.PI) / 180);
+        cCtx.fillStyle = this.color;
+        cCtx.globalAlpha = Math.max(0, this.opacity);
+        cCtx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+        cCtx.restore();
+      }
+    }
+
+    function launchConfetti(count = 130) {
+      for (let i = 0; i < count; i++) confettiList.push(new ConfettiPiece());
+    }
+
+    function createBalloonPopBurst(x, y) {
+      for (let i = 0; i < 40; i++) confettiList.push(new ConfettiPiece(x, y, true));
+    }
+
+    function animateConfetti() {
+      cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      for (let i = confettiList.length - 1; i >= 0; i--) {
+        const piece = confettiList[i];
+        piece.update();
+        piece.draw();
+        if (piece.y > confettiCanvas.height + 40 || piece.opacity <= 0) {
+          confettiList.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animateConfetti);
+    }
+
+    // Rising Balloons
+    const balloonContainer = document.getElementById("balloon-container");
+    const balloonColors = [
+      { body: '#ff3366', top: '#ff6699' },
+      { body: '#ffaa00', top: '#ffcc33' },
+      { body: '#00d2ff', top: '#80e5ff' },
+      { body: '#9d4edd', top: '#c77dff' },
+      { body: '#06d6a0', top: '#70e000' }
+    ];
+
+    function createBalloon() {
+      const balloon = document.createElement("div");
+      balloon.classList.add("balloon");
+      const color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+      const startX = Math.random() * 85 + 5;
+      const duration = Math.random() * 6 + 10;
+      const scale = Math.random() * 0.3 + 0.75;
+
+      balloon.style.left = `${startX}vw`;
+      balloon.style.animationDuration = `${duration}s`;
+      balloon.style.transform = `scale(${scale})`;
+
+      balloon.innerHTML = `
+        <svg width="55" height="85" viewBox="0 0 60 95">
+          <path d="M 30,5 C 48,5 58,22 58,45 C 58,68 38,78 30,82 C 22,78 2,68 2,45 C 2,22 12,5 30,5 Z" fill="${color.body}" />
+          <polygon points="26,82 34,82 32,87 28,87" fill="${color.body}" />
+          <path d="M 30,87 Q 24,96 30,105 T 32,120" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="none" />
+        </svg>
+      `;
+
+      balloon.addEventListener("click", () => {
+        const rect = balloon.getBoundingClientRect();
+        createBalloonPopBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        balloon.remove();
+      });
+
+      balloonContainer.appendChild(balloon);
+
+      setTimeout(() => {
+        if (balloon.parentNode) balloon.remove();
+      }, duration * 1000);
+    }
+
+    for (let i = 0; i < 7; i++) setTimeout(createBalloon, i * 400);
+    setInterval(createBalloon, 2200);
+
+    // Initial load
+    setupTracker();
+    renderPhoto(0);
+    animateSparkles();
+    animateConfetti();
+    launchConfetti(140);
+  </script>
+</body>
+</html>
